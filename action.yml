@@ -1,0 +1,33 @@
+name: Report tests to Tesna
+description: Send JUnit XML test results to Tesna, so every story shows what passed on each platform.
+author: Tesna
+branding:
+  icon: check-circle
+  color: yellow
+inputs:
+  api-key:
+    description: A Tesna CI key (tsn_…) from Settings · API keys. Store it as a secret.
+    required: true
+  project:
+    description: The Tesna project key (e.g. CHE) or id.
+    required: true
+  env:
+    description: The environment these results are for, e.g. Web, iOS or Android.
+    required: true
+  files:
+    description: Space-separated globs of JUnit XML reports.
+    default: "**/junit*.xml **/TEST-*.xml **/test-results/**/*.xml"
+  url:
+    description: Your Tesna address.
+    default: https://tesna.dev
+  fail-on-error:
+    description: Fail the job when Tesna can't be reached or rejects a report. By default it only warns.
+    default: "false"
+outputs:
+  matched:
+    description: How many results matched a Tesna test case.
+  unmatched:
+    description: How many results matched no test case.
+runs:
+  using: node24
+  main: index.mjs
