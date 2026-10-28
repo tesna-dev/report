@@ -1,5 +1,6 @@
 import { appendFileSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative, sep } from "node:path";
+import { pathToFileURL } from "node:url";
 
 const input = (name, fallback = "") => (process.env[`INPUT_${name.toUpperCase().replace(/ /g, "_")}`] ?? "").trim() || fallback;
 const strict = input("fail-on-error", "false") === "true";
@@ -100,4 +101,4 @@ async function main() {
   append(process.env.GITHUB_STEP_SUMMARY, summary.join("\n"));
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) await main();
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) await main();
