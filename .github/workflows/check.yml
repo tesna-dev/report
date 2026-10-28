@@ -1,0 +1,21 @@
+name: Check
+on: [push, pull_request]
+jobs:
+  check:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: mkdir -p reports && echo '<testsuites><testsuite name="s"><testcase name="t"/></testsuite></testsuites>' > reports/junit.xml
+        shell: bash
+      - id: report
+        uses: ./
+        with:
+          api-key: tsn_invalid
+          project: CHE
+          env: Web
+          url: https://tesna.dev
+      - run: test "${{ steps.report.outputs.matched }}" = "0"
+        shell: bash
