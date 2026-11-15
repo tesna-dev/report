@@ -45,6 +45,16 @@ export function findFiles(root, globs) {
   return out.sort();
 }
 
+export function commitSha(env = process.env, read = readFileSync) {
+  let sha = env.GITHUB_SHA ?? "";
+  if (env.GITHUB_EVENT_PATH && /^pull_request/.test(env.GITHUB_EVENT_NAME ?? "")) {
+    try {
+      sha = JSON.parse(read(env.GITHUB_EVENT_PATH, "utf8")).pull_request?.head?.sha || sha;
+    } catch {}
+  }
+  return /^[0-9a-f]{7,40}$/i.test(sha) ? sha : "";
+}
+
 async function main() {
   const key = input("api-key");
   const project = input("project");
@@ -58,7 +68,8 @@ async function main() {
   const files = findFiles(root, globs);
   if (!files.length) return warn(`No JUnit reports found for: ${globs.join(" ")}`);
 
-  const url = `${base}/api/v1/runs/ingest?project=${encodeURIComponent(project)}&env=${encodeURIComponent(env)}`;
+  const sha = commitSha();
+  const url = `${base}/api/v1/runs/ingest?project=${encodeURIComponent(project)}&env=${encodeURIComponent(env)}${sha ? `&sha=${sha}` : ""}`;
   const total = { matched: 0, passed: 0, failed: 0, skipped: 0 };
   const unmatched = [];
   let link = "";

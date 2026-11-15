@@ -17,6 +17,8 @@ Send your JUnit test results to [Tesna](https://tesna.dev), so every story shows
 
 Results match a Tesna test case by its **test key** (the test's name, or `classname.name`) or, failing that, by its exact title. Tests your coding agent writes and links with `link_automation` already have a key. The job summary lists anything that didn't match.
 
+The action also sends the commit it ran on (on pull requests, the pull request's head commit). When two stories have a test with the same title, Tesna prefers the story whose linked pull request has that commit. This needs GitHub connected under Settings · GitHub in Tesna, and changes nothing otherwise.
+
 ## Inputs
 
 | Input | Required | Default | |
