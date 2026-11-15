@@ -8,6 +8,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+      - run: node --test
+        shell: bash
       - run: mkdir -p reports && echo '<testsuites><testsuite name="s"><testcase name="t"/></testsuite></testsuites>' > reports/junit.xml
         shell: bash
       - id: report
